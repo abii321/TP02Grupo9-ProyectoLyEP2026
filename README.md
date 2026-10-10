@@ -1,136 +1,155 @@
-Aquí tienes una propuesta completa y profesional para tu archivo `README.md`. Está estructurada siguiendo las mejores prácticas para repositorios de GitHub, detallando la arquitectura MERN que acabamos de implementar y ocultando cualquier dato sensible.
-
-Puedes copiar el siguiente bloque de código y pegarlo directamente en tu archivo `README.md` en la raíz del proyecto.
-
-```markdown
-#Huellitics - Plataforma de Gestión de Clientes
-
-Este proyecto es una aplicación web Full-Stack (MERN) diseñada para la gestión integral de clientes. Permite llevar un registro de usuarios, visualizar métricas en un panel de control dinámico y realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) con persistencia de datos en la nube.
-
-La aplicación cuenta con un sistema de rutas protegidas basado en roles (Soporte y Gerencia), donde ciertas acciones destructivas (como eliminar clientes) están restringidas únicamente a usuarios con privilegios gerenciales.
-
-##Arquitectura del Proyecto
-
-El proyecto está dividido en dos aplicaciones independientes que se comunican a través de peticiones HTTP (API REST):
-*   **Client (Frontend):** Interfaz de usuario interactiva construida con React, encargada de la validación de formularios, el enrutamiento y la presentación de datos.
-*   **Server (Backend):** Servidor API construido con Node.js y Express que gestiona la lógica de negocio y la conexión segura con la base de datos.
-
-##Tecnologías Utilizadas
-
-###Frontend (Directorio `/client`)
-*   **React:** (Inicializado con Vite) para la construcción de interfaces de usuario.
-*   **React Router Dom:** Para la navegación y protección de rutas (Login/Dashboard).
-*   **Axios:** Para el consumo de la API REST.
-*   **React Bootstrap:** Para componentes de UI ágiles.
-*   **CSS Puro:** Estilos personalizados modulares.
-
-###Backend (Directorio `/server`)
-*   **Node.js & Express:** Entorno de ejecución y framework para el servidor web.
-*   **MongoDB Atlas:** Base de datos NoSQL en la nube.
-*   **Mongoose:** ODM para modelar los datos de la aplicación.
-*   **Cors:** Middleware para habilitar el intercambio de recursos de origen cruzado.
-*   **Dotenv:** Para la gestión segura de variables de entorno.
-*   **Nodemon:** Para la recarga automática del servidor durante el desarrollo.
+# 🐾 Huellitics — Plataforma SaaS de Gestión Comercial y Analítica Inteligente
+Huellitics es una plataforma SaaS orientada a pequeñas y medianas empresas dedicadas a la venta y distribución de productos para mascotas. Su objetivo es centralizar la gestión de clientes, facilitar el seguimiento comercial y proporcionar información útil para la toma de decisiones mediante herramientas de análisis de datos e Inteligencia Artificial.
 
 ---
 
-##Requisitos Previos
+## Equipo N.º 9 — LyEP 2026
+- **Cansino Oliva, Celeste Luján**
+- **Orellana, Ariana Plácida Guadalupe**
+- **Terán, Luciana Abigail**
 
-Antes de comenzar, asegúrate de tener instalado en tu sistema local:
-*   [Node.js](https://nodejs.org/es/) (Versión 18.x o superior)
-*   [Git](https://git-scm.com/)
+---
 
-##Configuración y Variables de Entorno
+## Arquitectura del proyecto
+El repositorio utiliza una arquitectura desacoplada cliente-servidor, que separa la interfaz de usuario de la lógica de negocio y el acceso a los datos.
+- **Frontend:** React y Vite.
+- **Backend:** Node.js y Express, mediante una API REST.
+- **Base de datos:** MongoDB Atlas.
+- **Modelado de datos:** Mongoose.
 
-Por motivos de seguridad, las credenciales de la base de datos no se incluyen en este repositorio. 
-
-1. Dirígete a la carpeta `server/`.
-2. Crea un archivo llamado exactamente `.env`.
-3. Copia el contenido del archivo `server/.env.example` y pégalo en tu nuevo `.env`, reemplazando los valores por tus credenciales reales:
-env
-# Ejemplo de archivo .env
-PORT=3001
-MONGODB_URI="mongodb+srv://<USUARIO>:<PASSWORD>@<CLUSTER>.mongodb.net/?retryWrites=true&w=majority"
-
-*(Nota: Nunca subas el archivo `.env` a tu repositorio. Ya está excluido en el `.gitignore`).*
-
-##Instalación y Ejecución
-
-Para correr el proyecto localmente, es necesario levantar tanto el servidor como el cliente en terminales separadas.
-
-###Iniciar el Backend (Servidor)
-
-Abre una terminal y ejecuta los siguientes comandos:
-
-```bash
-# 1. Ingresa a la carpeta del servidor
-cd server
-
-# 2. Instala las dependencias necesarias
-npm install
-
-# 3. Ejecuta el servidor en modo desarrollo
-npm run dev
-
-
-Verás un mensaje indicando: `Servidor ejecutándose en http://localhost:3001` y la confirmación de conexión a MongoDB.
-
-###Iniciar el Frontend (Cliente)
-
-Abre una **nueva terminal** (dejando la del servidor corriendo) y ejecuta:
-
-```bash
-# 1. Ingresa a la carpeta del cliente
-cd client
-
-# 2. Instala las dependencias de React
-npm install
-
-# 3. Ejecuta la aplicación de React
-npm run dev
-
+### Estructura del repositorio
+```text
+TP02Grupo9-ProyectoLyEP2026/
+├── client/                 # Aplicación frontend (React / Vite)
+└── server/                 # Backend REST API (Node.js / Express)
+    ├── config/             # Conexion a la base de datos
+    ├── controllers/        # Controladores y lógica de negocio
+    ├── models/             # Modelos de datos de Mongoose
+    └── routes/             # Definición de rutas y endpoints REST
 ```
 
-La terminal te mostrará un enlace local (generalmente `http://localhost:5173`). Haz clic en él para abrir la aplicación en tu navegador.
+---
+
+## Instalación y puesta en marcha
+
+### Requisitos previos
+Antes de ejecutar el proyecto, es necesario contar con:
+- [Node.js](https://nodejs.org/) y npm instalados.
+- Una cuenta y un clúster configurado en [MongoDB Atlas](https://www.mongodb.com/atlas).
+- Git para clonar el repositorio.
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/abii321/TP02Grupo9-ProyectoLyEP2026.git
+cd TP02Grupo9-ProyectoLyEP2026
+```
+
+### 2. Configurar y ejecutar el backend
+Ingresar a la carpeta `server/` e instalar las dependencias:
+```bash
+cd server
+npm install
+```
+Crear un archivo `.env` en la raíz de `server/` con las siguientes variables:
+```dotenv
+PORT=3001
+MONGO_URI=tu_cadena_de_conexion_mongodb_atlas
+```
+Reemplazar `tu_cadena_de_conexion_mongodb_atlas` por la cadena de conexión correspondiente al clúster de MongoDB Atlas.
+Verificar que la dirección IP esté autorizada en la configuración de acceso de MongoDB Atlas y que las credenciales sean correctas.
+Iniciar el servidor de desarrollo:
+```bash
+npm run dev
+```
+El backend estará disponible en `http://localhost:3001`.
+
+### 3. Configurar y ejecutar el frontend
+Abrir una nueva terminal, regresar a la raíz del repositorio e ingresar a `client/`:
+```bash
+cd client
+npm install
+npm run dev
+```
+El frontend estará disponible en `http://localhost:5173`.
 
 ---
 
-##Notas para pruebas (Testing)
+## Documentación de la API REST
+La API REST implementa las operaciones CRUD del módulo de clientes, permitiendo registrar, consultar, actualizar y eliminar clientes.
 
-Para acceder al sistema, la pantalla de **Login** tiene ciertas validaciones locales:
+**URL base local:** `http://localhost:3001/api/clientes`
 
-* **Email:** Debe tener formato válido (ej. `test@test.com`).
-* **Contraseña:** Mínimo 8 caracteres, al menos 1 letra mayúscula y 1 número (ej. `Admin123`).
-* **Sector:** Debes seleccionar "Soporte" o "Gerencia".
-* *Nota: Solo seleccionando "Gerencia" se habilitará el botón rojo de "Eliminar Cliente" en las fichas de detalle.*
+### Endpoints disponibles
+| Método | Endpoint | Descripción | Respuestas esperadas |
+|---|---|---|---|
+| GET | `/api/clientes` | Obtiene la lista de clientes. | `200 OK` |
+| GET | `/api/clientes/:id` | Obtiene los datos de un cliente específico. | `200 OK`, `404 Not Found` |
+| POST | `/api/clientes` | Registra un nuevo cliente, sujeto a las validaciones implementadas. | `201 Created`, `400 Bad Request` |
+| PUT | `/api/clientes/:id` | Actualiza un cliente existente. | `200 OK`, `400 Bad Request` |
+| DELETE | `/api/clientes/:id` | Elimina un cliente de la base de datos. | `200 OK`, `404 Not Found` |
+> Los códigos indicados corresponden a las respuestas previstas para las operaciones habituales y deben coincidir con las respuestas efectivamente implementadas en el backend.
 
+### Ejemplo de solicitud: registrar un cliente
+**Método:** `POST`
+**Endpoint:** `/api/clientes`
+**Cuerpo de la petición (JSON):**
+```json
+{
+  "username": "cliente123",
+  "email": "cliente@example.com",
+  "password": "contraseña_de_ejemplo",
+  "name": {
+    "firstname": "Ana",
+    "lastname": "Gómez"
+  },
+  "address": {
+    "city": "San Salvador de Jujuy"
+  },
+  "phone": "3884000000"
+}
+```
+Los valores son ilustrativos y deben adaptarse a las validaciones y al esquema definidos en el backend.
 
-##Estructura Principal de Carpetas
+---
 
-TP02Grupo9-ProyectoLyEP2026/
-├── client/                      # FRONTEND
-│   ├── src/
-│   │   ├── components/          # Componentes reutilizables (Formularios, Header, etc.)
-│   │   ├── context/             # Estados globales (Autenticación)
-│   │   ├── css/                 # Hojas de estilo
-│   │   ├── hooks/               # Custom hooks (useAutorizaciones)
-│   │   ├── pages/               # Vistas principales (Dashboard, ListaClientes, etc.)
-│   │   ├── routes/              # Configuración de React Router
-│   │   └── services/            # Peticiones HTTP con Axios
-│   └── package.json
-│
-├── server/                      # BACKEND
-│   ├── config/                  # Configuración de bases de datos
-│   ├── controllers/             # Lógica de las rutas (CRUD)
-│   ├── models/                  # Esquemas de Mongoose (cliente.model.js)
-│   ├── routes/                  # Definición de Endpoints de la API
-│   ├── .env.example             # Plantilla de variables de entorno
-│   ├── app.js                   # Configuración de Express y middlewares
-│   ├── server.js                # Punto de entrada y conexión de puerto
-│   └── package.json
-│
-├── .gitignore                   # Archivos y carpetas ignorados por Git
-└── README.md                    # Documentación del proyecto
+## Metodología de trabajo y contribución
+El desarrollo se organizó mediante Git y GitHub, siguiendo las pautas de trabajo colaborativo establecidas por la cátedra.
 
-##Licencia
-Este proyecto fue desarrollado bajo requerimientos académicos. Revisa el archivo `LICENSE` para más detalles sobre su distribución.
+### Ramas de trabajo
+Cada integrante desarrolló sus funcionalidades en una rama propia siguiendo la convención: `feature/ApellidoNombre`
+
+### Commits semánticos
+Se utilizaron commits descriptivos siguiendo la convención de commits semánticos, con prefijos como:
+- `feat:` incorporación de funcionalidades.
+- `fix:` corrección de errores.
+- `docs:` creación o modificación de documentación.
+- `refactor:` mejora de la estructura del código sin cambiar su comportamiento.
+- `chore:` tareas de mantenimiento y configuración.
+
+### Pull Requests (PR)
+Las integraciones a la rama principal se realizaron mediante Pull Requests documentados que incluyen:
+- Título representativo. 
+- Descripción del trabajo realizado. 
+- Identificación de los archivos modificados.
+- Issues relacionados
+- Declaración del uso de herramientas de Inteligencia Artificial, cuando corresponde.
+
+---
+
+## Declaración de uso de Inteligencia Artificial
+
+### Herramientas utilizadas
+
+- ChatGPT.
+- Gemini.
+
+### Propósito y alcance
+Las herramientas de Inteligencia Artificial se utilizaron como apoyo durante el desarrollo, principalmente para la estructuración de código inicial (*boilerplate*) de controladores, la elaboración de esquemas con Mongoose y la validación de expresiones regulares para los endpoints.
+
+### Revisión y validación
+El código elaborado con asistencia de estas herramientas fue revisado y adaptado por las integrantes del equipo. Se realizaron comprobaciones y pruebas manuales para evaluar su funcionamiento y detectar posibles errores, procurando mantener la coherencia con los requisitos del proyecto.
+
+---
+
+## Licencia y uso
+Este proyecto fue desarrollado con fines académicos en el marco de la asignatura LyEP 2026.
