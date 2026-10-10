@@ -1,51 +1,53 @@
+// src/pages/DetalleCliente.jsx
 import '../css/detallecliente.css'
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import clientesService from "../services/clientesService"; // Importamos el servicio
 
 const DetalleCliente = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Este 'id' ahora es el _id de MongoDB (ej. "65f3a...")
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
 
   const [cliente, setCliente] = useState(null);
   const [mensaje, setMensaje] = useState("");
+  const [error, setError] = useState(false);
 
-    useEffect(() => {
-    const clientesGuardados = JSON.parse(localStorage.getItem("clientesLocal")) || [];
-    const clienteLocal = clientesGuardados.find(c => c.id === Number(id));
+  useEffect(() => {
+    const cargarCliente = async () => {
+      try {
+        // Buscamos el cliente directamente en tu backend
+        const data = await clientesService.obtenerClientePorId(id);
+        setCliente(data);
+      } catch (err) {
+        console.error("Error al cargar el cliente:", err);
+        setError(true);
+      }
+    };
 
-    if (clienteLocal) {
-      setCliente(clienteLocal);
-    } else {
-      fetch(`https://fakestoreapi.com/users/${id}`)
-        .then((res) => res.json())
-        .then((data) => setCliente(data));
-    }
+    cargarCliente();
   }, [id]);
 
   const eliminarCliente = async () => {
-    try {
-      const respuesta = await fetch(
-        `https://fakestoreapi.com/users/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (respuesta.ok) {
+    if (window.confirm("¿Estás seguro de eliminar este cliente?")) {
+      try {
+        // Eliminamos el cliente usando el servicio (que apunta a tu backend)
+        await clientesService.eliminarCliente(id);
         setMensaje("Cliente eliminado correctamente");
 
         setTimeout(() => {
           navigate("/clientes");
         }, 2000);
-        const clientesGuardados = JSON.parse(localStorage.getItem("clientesLocal")) || [];
-        const filtrados = clientesGuardados.filter(c => c.id !== Number(id));
-        localStorage.setItem("clientesLocal", JSON.stringify(filtrados));
+      } catch (err) {
+        setMensaje("Error al eliminar cliente");
       }
-    } catch (error) {
-      setMensaje("Error al eliminar cliente");
     }
   };
+
+  if (error) {
+    return <h2 style={{ textAlign: "center", marginTop: "50px" }}>Error al cargar la ficha del cliente.</h2>;
+  }
+
   if (!cliente) {
     return <h2 style={{ textAlign: "center", marginTop: "50px" }}>Cargando ficha del cliente...</h2>;
   }
@@ -58,12 +60,12 @@ const DetalleCliente = () => {
       {mensaje && <p className='mensaje-eliminado'>{mensaje}</p>}
 
       <p>
-        <strong>ID:</strong> {cliente.id}
+        <strong>ID:</strong> {cliente._id} {/* Cambiamos .id por ._id */}
       </p>
 
       <p>
         <strong>Nombre:</strong>{" "}
-        {cliente.name.firstname} {cliente.name.lastname}
+        {cliente.name?.firstname} {cliente.name?.lastname}
       </p>
 
       <p>
@@ -77,19 +79,19 @@ const DetalleCliente = () => {
       <h2>Dirección</h2>
 
       <p>
-        <strong>Calle:</strong> {cliente.address.street}
+        <strong>Calle:</strong> {cliente.address?.street || "No registrada"}
       </p>
 
       <p>
-        <strong>Número:</strong> {cliente.address.number}
+        <strong>Número:</strong> {cliente.address?.number || "No registrado"}
       </p>
 
       <p>
-        <strong>Código Postal:</strong> {cliente.address.zipcode}
+        <strong>Código Postal:</strong> {cliente.address?.zipcode || "No registrado"}
       </p>
 
       <p>
-        <strong>Ciudad:</strong> {cliente.address.city}
+        <strong>Ciudad:</strong> {cliente.address?.city}
       </p>
 
       <h2>Credenciales</h2>
