@@ -1,7 +1,8 @@
-import "../css/listaclientes.css"
+import "../css/listaclientes.css";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FormCliente from "../components/FormCliente";
+import clientesService from "../services/clientesService"; // Importamos tu servicio
 
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([]);
@@ -9,35 +10,41 @@ const ListaClientes = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    const clientesGuardados = localStorage.getItem("clientesLocal");
-
-    if (clientesGuardados) {
-      setClientes(JSON.parse(clientesGuardados));
+  // Función para cargar clientes desde tu API
+  const cargarClientes = async () => {
+    try {
+      setLoading(true);
+      const data = await clientesService.obtenerClientes();
+      setClientes(data);
       setLoading(false);
-    } else {
-      fetch("https://fakestoreapi.com/users")
-        .then((res) => res.json())
-        .then((data) => {
-          setClientes(data);
-          localStorage.setItem("clientesLocal", JSON.stringify(data));
-          setLoading(false);
-        })
-        .catch(() => {
-          setError(true);
-          setLoading(false);
-        });
+    } catch (err) {
+      console.error(err);
+      setError(true);
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    cargarClientes();
   }, []);
+
+  // Función para manejar el borrado
+  const handleEliminar = async (id) => {
+    if (window.confirm("¿Estás seguro de eliminar este cliente?")) {
+      try {
+        await clientesService.eliminarCliente(id);
+        // Filtramos usando _id (MongoDB)
+        setClientes(clientes.filter((cliente) => cliente._id !== id));
+      } catch (err) {
+        alert("Ocurrió un error al eliminar el cliente");
+      }
+    }
+  };
 
   const clientesFiltrados = clientes.filter(
     (cliente) =>
-      cliente.name.lastname
-        .toLowerCase()
-        .includes(busqueda.toLowerCase()) ||
-      cliente.address.city
-        .toLowerCase()
-        .includes(busqueda.toLowerCase())
+      cliente.name?.lastname?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      cliente.address?.city?.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   if (loading) {
@@ -49,26 +56,18 @@ const ListaClientes = () => {
   }
 
   const agregarClienteVisual = (nuevoCliente) => {
-    const listaActualizada = [nuevoCliente, ...clientes];
-    setClientes(listaActualizada);
-    localStorage.setItem("clientesLocal", JSON.stringify(listaActualizada));
+    setClientes([nuevoCliente, ...clientes]);
   };
-
 
   return (
     <div className="clientes-container">
-
       <h1>Clientes</h1>
       <FormCliente onCrear={agregarClienteVisual} />
 
       <hr />
 
       <div className="contenedor-buscador">
-
-        <h2 className="titulo-buscador">
-          Buscar Clientes
-        </h2>
-
+        <h2 className="titulo-buscador">Buscar Clientes</h2>
         <input
           className="buscador"
           type="text"
@@ -76,14 +75,12 @@ const ListaClientes = () => {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
-
         <p className="cantidad-clientes">
           Clientes encontrados: {clientesFiltrados.length}
         </p>
-
       </div>
+      
       <table className="tabla-clientes">
-
         <thead>
           <tr>
             <th>ID</th>
@@ -94,40 +91,38 @@ const ListaClientes = () => {
             <th>Acciones</th>
           </tr>
         </thead>
-
         <tbody>
-
           {clientesFiltrados.map((cliente) => (
-            <tr key={cliente.id}>
-
-              <td>{cliente.id}</td>
-
+            /* Usamos _id para la key */
+            <tr key={cliente._id}>
+              {/* Recortamos el ID de Mongo para que no se vea tan largo, opcional */}
+              <td>{cliente._id.substring(0, 6)}...</td>
               <td>
-                {cliente.name.firstname} {cliente.name.lastname}
+                {cliente.name?.firstname} {cliente.name?.lastname}
               </td>
-
               <td>{cliente.email}</td>
-
               <td>{cliente.phone}</td>
-
-              <td>{cliente.address.city}</td>
-
-              <td>
+              <td>{cliente.address?.city}</td>
+              <td style={{ display: "flex", gap: "10px" }}>
                 <Link
                   className="btn-ficha"
-                  to={`/clientes/${cliente.id}`}
+                  /* Usamos _id para la navegación */
+                  to={`/clientes/${cliente._id}`}
                 >
-                  Ver Ficha Completa
+                  Ver Ficha
                 </Link>
+                <button 
+                  className="btn-eliminar"
+                  onClick={() => handleEliminar(cliente._id)}
+                  style={{ backgroundColor: "#dc3545", color: "white", border: "none", borderRadius: "5px", padding: "5px 10px", cursor: "pointer" }}
+                >
+                  Eliminar
+                </button>
               </td>
-
             </tr>
           ))}
-
         </tbody>
-
       </table>
-
     </div>
   );
 };

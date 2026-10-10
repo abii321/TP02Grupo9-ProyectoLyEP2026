@@ -66,38 +66,30 @@ const FormCliente = ({ onCrear }) => {
         };
 
         try {
-
             setLoading(true);
 
-            const respuesta =
-                await clientesService.crearCliente(
-                    nuevoCliente
-                );
-            const idGenerado = Date.now();
-            const clienteParaPantalla = { ...nuevoCliente, id: idGenerado };
+            // Llamamos a la API. 'clienteGuardado' ya incluye el _id generado por MongoDB
+            const clienteGuardado = await clientesService.crearCliente(nuevoCliente);
 
-            if (onCrear) onCrear(clienteParaPantalla);
+            // Enviamos el objeto real a ListaClientes para que lo renderice
+            if (onCrear) onCrear(clienteGuardado);
 
+            setMensaje(`Cliente creado correctamente.`);
 
-            setMensaje(`Cliente creado correctamente. ID: ${idGenerado}`);
-
+            // Limpiamos el formulario
             setNombre("");
             setEmail("");
             setTelefono("");
             setCiudad("");
 
-        } catch {
-
+        } catch (err) {
+            // Capturamos el mensaje de error que envía tu backend (ej. "El email ya está registrado")
             setError(
-                "Ocurrió un error al crear el cliente."
+                err.response?.data?.message || "Ocurrió un error al crear el cliente."
             );
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
     return (
